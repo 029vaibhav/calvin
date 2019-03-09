@@ -6,8 +6,8 @@ public enum Operation {
 
     X_PLUS(">"),
     X_MINUS("<"),
-    Y_PLUS("^"),
-    Y_MINUS("v");
+    Y_PLUS("v"),
+    Y_MINUS("ʌ");
 
     @Getter
     String operator;

@@ -94,7 +94,7 @@ public class MainService {
 
     private static void driveTillDestination(Vehicle vehicle, Operation initialOp) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

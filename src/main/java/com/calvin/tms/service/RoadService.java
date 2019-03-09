@@ -44,22 +44,19 @@ public class RoadService {
     public void printRoad(int maxX, int maxy) {
         System.out.println("");
         Cell[][] cells = raod.getCells();
-        for (int i = 0; i < maxX; i++) {
-            for (int j = 0; j < maxy; j++) {
-                Cell cell = cells[j][i];
+        for (int j = 0; j < maxX; j++) {
+            for (int i = 0; i < maxy; i++) {
+                Cell cell = cells[i][j];
                 if (cell.isEnable()) {
 
                     if (cell.isOccupied()) {
-                        System.out.print("\033[31;1m[CAR]\033[0m");
+                        System.out.print("\033[31;1mCR\033[0m");
                     } else {
-                        System.out.print("[");
                         printOp(cell);
-                        System.out.print("]");
+
                     }
                 } else {
-                    System.out.print("[");
                     printOp(cell);
-                    System.out.print("]");
                 }
                 System.out.print(" ");
 
@@ -69,13 +66,16 @@ public class RoadService {
     }
 
     private void printOp(Cell cell) {
-        for (int k = 0; k < 4; k++) {
-            if (cell.getOperation().size() > k) {
-                System.out.print(cell.getOperation().get(k).getOperator());
-            } else {
-                System.out.print("X");
-            }
 
+        if (cell.getOperation().size() == 0) {
+            System.out.print("  ");
+        }
+         if (cell.getOperation().size() == 1) {
+            System.out.print("\033[0;32m" + cell.getOperation().get(0).getOperator() + "\033[0;32m");
+            System.out.print("\033[0;32m" + cell.getOperation().get(0).getOperator() + "\033[0;32m");
+        } else if (cell.getOperation().size() == 2) {
+            System.out.print("\033[0;32m" + cell.getOperation().get(0).getOperator() + "\033[0;32m");
+            System.out.print("\033[0;32m" + cell.getOperation().get(1).getOperator() + "\033[0;32m");
         }
     }
 
