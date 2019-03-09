@@ -14,10 +14,25 @@ public class MainService {
         VehicleMomentService vehicleMomentService = VehicleMomentService.getInstance();
 
         Vehicle vehicle = new Vehicle();
+        vehicle.setCx(0);
+        vehicle.setCy(5);
+        vehicle.setDx(5);
+        vehicle.setDy(9);
+
         Operation operation = initiaMoment(vehicle);
         drive(vehicle, operation);
         operation = initiaMoment(vehicle);
         drive(vehicle, operation);
+        System.out.println(vehicle);
+        vehicle.setCx(0);
+        vehicle.setCy(5);
+        vehicle.setDx(6);
+        vehicle.setDy(0);
+        operation = initiaMoment(vehicle);
+        drive(vehicle, operation);
+        operation = initiaMoment(vehicle);
+        drive(vehicle, operation);
+
         System.out.println(vehicle);
 
 
@@ -25,40 +40,53 @@ public class MainService {
 
     private static Operation initiaMoment(Vehicle vehicle) {
 
-        int cy = vehicle.getCy();
-        int dy = vehicle.getDy() - cy;
         int directionOfY = 0;
-        if (dy > 0) {
+        int dy;
+        if (vehicle.getDy() > vehicle.getCy()) {
             directionOfY = vehicle.getCy() + 1;
+            dy = 1;
         } else {
             directionOfY = vehicle.getCy() - 1;
+            dy = -1;
         }
 
-        Cell cell = RoadService.getInstance().raod.getCells()[cy][directionOfY];
+        Cell cell = RoadService.getInstance().raod.getCells()[vehicle.getCx()][directionOfY];
         if (cell.isEnable()) {
-            if (dy > 0) {
-                return Operation.Y_PLUS;
-            } else {
+            if (dy < 0 && cell.getOperation().contains(Operation.Y_MINUS)) {
                 return Operation.Y_MINUS;
+            } else if (dy > 0 && cell.getOperation().contains(Operation.Y_PLUS)) {
+                return Operation.Y_PLUS;
             }
         }
-        int dx = vehicle.getDx() - vehicle.getCx();
-        if (dx > 0) {
-            return Operation.X_PLUS;
+
+        int directionOfX = 0;
+        int dx;
+        if (vehicle.getDx() > vehicle.getCx()) {
+            directionOfX = vehicle.getCx() + 1;
+            dx = 1;
         } else {
+            directionOfX = vehicle.getCx() - 1;
+            dx = -1;
+        }
+
+        cell = RoadService.getInstance().raod.getCells()[directionOfX][vehicle.getCy()];
+        if (dx > 0 && cell.getOperation().contains(Operation.X_PLUS)) {
+            return Operation.X_PLUS;
+        } else if (dx < 0 && cell.getOperation().contains(Operation.X_MINUS)) {
             return Operation.X_MINUS;
         }
+        return null;
 
     }
 
     private static void drive(Vehicle vehicle, Operation initialOp) {
 
         if (initialOp == Operation.Y_MINUS || initialOp == Operation.Y_PLUS) {
-            while (vehicle.getCy() == vehicle.getDy()) {
+            while (vehicle.getCy() != vehicle.getDy()) {
                 VehicleMomentService.getInstance().moveVehicle(vehicle, initialOp);
             }
         } else {
-            while (vehicle.getCx() == vehicle.getDx()) {
+            while (vehicle.getCx() != vehicle.getDx()) {
                 VehicleMomentService.getInstance().moveVehicle(vehicle, initialOp);
             }
         }

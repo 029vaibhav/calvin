@@ -21,7 +21,10 @@ public class RoadService {
     }
 
     public void generateRoad(int maxX, int maxy) {
-        Cell[][] cells = new Cell[1000][1000];
+        int i1 = maxX / 2;
+        int i2 = maxy / 2;
+
+        Cell[][] cells = new Cell[maxX][maxy];
         for (int i = 0; i < maxX; i++) {
             for (int j = 0; j < maxy; j++) {
                 cells[i][j] = new Cell(i, j, false);
@@ -37,7 +40,7 @@ public class RoadService {
         for (int i = 0; i < maxX; i++) {
 
             for (int j = 0; j < maxy; j++) {
-                Cell cell = cells[i][j];
+                Cell cell = cells[j][i];
                 if (cell.isEnable()) {
                     System.out.print("[");
                     printOp(cell);
@@ -67,8 +70,8 @@ public class RoadService {
     }
 
     private void enableRaod(Cell[][] cells, Operation operation, int sx, int ex, int sy, int ey) {
-        for (int i = sy; i < ey; i++) {
-            for (int j = sx; j < ex; j++) {
+        for (int i = sx; i < ex; i++) {
+            for (int j = sy; j < ey; j++) {
                 Cell cell = cells[i][j];
                 cell.setEnable(true);
                 cell.getOperation().add(operation);
