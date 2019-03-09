@@ -118,7 +118,7 @@ func ComputeCoords(source structs.Location, destination structs.Location) [][]fl
 	coords := [][]float64{}
 	azimuth := CalculateBearing(source, destination)
 	interval := 10.0
-	for i := 0; i < len(ranges); i++ {
+	for i := 0; i < len(ranges):q:; i++ {
 		coords = append(coords, GenerateCoords(interval, azimuth, source, destination)...)
 	}
 	return coords

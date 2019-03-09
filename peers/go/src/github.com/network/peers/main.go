@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/network/peers/structs"
 	"github.com/network/peers/logic"
+	"fmt"
 )
 
 
@@ -22,9 +23,12 @@ func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&view) 
 	routes := [][][]float64{}
 	for _, route := range view.Routes {
-		coords := logic.ComputeCoords(route.Source, view.Routes[0].Destination)
+		coords := logic.ComputeCoords(route.Source, route.Destination)
 		routes = append(routes, coords)
 	}
+	a, b := logic.GetIntersectionPoint(routes[0], routes[1], 10.0)
+	fmt.Println(a)
+	fmt.Println(b)
 	respondwithJSON(w, http.StatusOK, map[string]([][][]float64){"data": routes})
 }
 
