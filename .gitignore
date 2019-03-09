@@ -85,3 +85,17 @@ fabric.properties
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+.DS_Store
+.gradle/4.10.2/
+.gradle/4.10/vcsMetadata-1/
+.idea/sonarlint/
+build/
+peers/.DS_Store
+peers/go/.DS_Store
+peers/go/src/.DS_Store
+peers/go/src/github.com/.DS_Store
+peers/go/src/github.com/network/.DS_Store
+src/main/resources/
+src/test/
+.gradle
+.idea
