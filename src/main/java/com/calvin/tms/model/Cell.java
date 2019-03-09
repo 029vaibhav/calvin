@@ -1,6 +1,7 @@
 package com.calvin.tms.model;
 
 import com.calvin.tms.model.enums.Operation;
+import com.calvin.tms.service.RoadService;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,6 +15,10 @@ public class Cell {
     List<Operation> operation = new ArrayList<>();
     boolean decision;
     boolean enable;
+    boolean occupied;
+
+    public Cell() {
+    }
 
     public Cell(int x, int y, boolean decision) {
         this.x = x;
