@@ -1,27 +1,33 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"github.com/go-chi/chi"
+	"net/http"
+	"encoding/json"
+	"github.com/network/peers/structs"
+	"github.com/network/peers/logic"
+)
 
-type location struct {
-	Lat float32
-	Lon float32
+
+func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
+    response, _ := json.Marshal(payload)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(code)
+    w.Write(response)
 }
 
-type broadcastPkt struct {
-	Id string
-	Speed float32
-	Location location
+func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
+	var view structs.View 
+	json.NewDecoder(r.Body).Decode(&view) 
+	coords := logic.ComputeCoords(view.Routes[0].Source, view.Routes[0].Destination)
+	respondwithJSON(w, http.StatusOK, map[string]([][]float64){"data": coords})
 }
 
-// Output to this function will be randomly generated data
-// in follong structure
-/*
- location: (lat, lon)
- timestamp: 0
- speed: speed
- directions: - - - -
-*/
 func main() {
-    fmt.Println("hello world")
-	fmt.Println(location{3, 4})
+	r := chi.NewRouter()
+	r.Route("/view", func(r chi.Router) {
+		r.Post("/generate", CreateViewHandler)
+	})
+	log.Fatal(http.ListenAndServe(":8087", r))
 }

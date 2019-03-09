@@ -60,16 +60,32 @@ def main(interval,azimuth,lat1,lng1,lat2,lng2):
     return coords
 
 if __name__ == "__main__":
+    with open("sample-route-2.json", "r") as f:
+        import json
+        geodata = json.load(f)
+        f.close()
+    pairs = geodata["routes"][0]["geometry"]
+    pairs = map(tuple, pairs)
+    source_destination_pairs = zip(pairs, pairs[1:])
+    # print source_destination_pairs
     #point interval in meters
     interval = 10.0
     #direction of line in degrees
     #start point
-    lng1 = 12.919909 
-    lat1 = 77.667243
-    #end point
-    lng2 = 12.912882
-    lat2 = 77.680455
-    azimuth = calculateBearing(lat1,lng1,lat2,lng2)
-    # print azimuth
-    coords = main(interval,azimuth,lat1,lng1,lat2,lng2)
-    print coords
+    # lng1 = 12.919909 
+    # lat1 = 77.667243
+    # #end point
+    # lng2 = 12.912882
+    # lat2 = 77.680455
+
+    final_points = []
+    for source, destination in source_destination_pairs:
+        lat1, lng1 = source
+        lat2, lng2 = destination
+        # print source, destination
+        azimuth = calculateBearing(lat1,lng1,lat2,lng2)
+        # print azimuth
+        coords = main(interval,azimuth,lat1,lng1,lat2,lng2)
+        
+        final_points += coords
+    print final_points
