@@ -113,13 +113,54 @@ func GenerateCoords(interval float64, azimuth float64, source structs.Location, 
 	return coords
 }
 
-func ComputeCoords(source structs.Location, destination structs.Location) [][]float64 {
+func ComputeDistance(pointA []float64, pointB []float64) float64 {
+	R := 6371000.0 // Radius of the Earth in km
+	startLat := Radians(pointA[0])
+	startLon := Radians(pointA[1])
+	endLat := Radians(pointB[0])
+	endLon := Radians(pointB[1])
+
+	dLon := endLon - startLon
+	dLat := endLat - startLat
+	
+	a := math.Pow(math.Sin(dLat / 2), 2) + math.Cos(startLat) * math.Pow(math.Sin(dLon / 2), 2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+	
+	return R * c
+
+}
+
+func GetIntersectionPoint(baseRoute [][]float64, checkRoute [][]float64, interval float64) (int, int) {
+	for i := 0; i < len(baseRoute); i++ {
+		for j := 0; j < len(checkRoute); j++ {
+			// fmt.Println(checkRoute[j])
+			distance := ComputeDistance(baseRoute[i], checkRoute[j])
+			// fmt.Println("Distance ", distance, interval)
+
+			if distance <= interval {
+				return i, j
+			}
+		}
+	}
+
+	return -1, -1
+}
+
+func ComputeCoords(source structs.Location, destination structs.Location) ([][]float64) {
 	ranges, _ := FetchRoutePoints(source, destination)
 	coords := [][]float64{}
 	azimuth := CalculateBearing(source, destination)
 	interval := 10.0
-	for i := 0; i < len(ranges):q:; i++ {
-		coords = append(coords, GenerateCoords(interval, azimuth, source, destination)...)
+	for i := 0; i < len(ranges)-1; i++ {
+		newSource := structs.Location {
+			Lat: ranges[i][0],
+			Lon: ranges[i][1],
+		}
+		newDestination := structs.Location {
+			Lat: ranges[i+1][0],
+			Lon: ranges[i+1][1],
+		}
+		coords = append(coords, GenerateCoords(interval, azimuth, newSource, newDestination)...)
 	}
 	return coords
 }

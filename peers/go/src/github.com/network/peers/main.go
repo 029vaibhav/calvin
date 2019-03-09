@@ -26,6 +26,7 @@ func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
 		coords := logic.ComputeCoords(route.Source, route.Destination)
 		routes = append(routes, coords)
 	}
+	fmt.Println(routes[0], routes[1])
 	a, b := logic.GetIntersectionPoint(routes[0], routes[1], 10.0)
 	fmt.Println(a)
 	fmt.Println(b)
