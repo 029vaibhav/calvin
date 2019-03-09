@@ -1,6 +1,5 @@
 package com.calvin.tms.model;
 
-import com.calvin.tms.model.enums.Operation;
 import lombok.Data;
 
 import java.util.UUID;
@@ -15,5 +14,7 @@ public class Vehicle {
     int cy;
     int dx;
     int dy;
+    String lat;
+    String lon;
 
 }

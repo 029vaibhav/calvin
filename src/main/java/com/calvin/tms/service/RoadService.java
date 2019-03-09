@@ -1,25 +1,29 @@
 package com.calvin.tms.service;
 
-import com.calvin.tms.model.Cell;
-import com.calvin.tms.model.Raod;
-import com.calvin.tms.model.Vehicle;
-import com.calvin.tms.model.enums.Direction;
+import com.calvin.tms.controller.WebSocket;
+import com.calvin.tms.model.*;
 import com.calvin.tms.model.enums.Operation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.awt.*;
+import java.util.List;
 
+@Service
 public class RoadService {
 
-
-    private static RoadService ourInstance = new RoadService();
+    @Autowired
+    private WebSocket webSocket;
 
     Raod raod = new Raod();
+    private RestTemplate restTemplate = new RestTemplate();
 
-    public static RoadService getInstance() {
-        return ourInstance;
-    }
 
-    private RoadService() {
+    public Raod generateRoad(LatLongRequest latLongRequest) {
+        List<Route> routes = latLongRequest.getRoutes();
+        DataResponse dataResponse = restTemplate.postForObject("http://localhost:8087/view/generate",
+            latLongRequest, DataResponse.class);
+        return raod;
     }
 
     public void generateRoad(int maxX, int maxy) {
@@ -70,7 +74,7 @@ public class RoadService {
         if (cell.getOperation().size() == 0) {
             System.out.print("  ");
         }
-         if (cell.getOperation().size() == 1) {
+        if (cell.getOperation().size() == 1) {
             System.out.print("\033[0;32m" + cell.getOperation().get(0).getOperator() + "\033[0;32m");
             System.out.print("\033[0;32m" + cell.getOperation().get(0).getOperator() + "\033[0;32m");
         } else if (cell.getOperation().size() == 2) {
@@ -151,6 +155,13 @@ public class RoadService {
         Cell[][] cells = raod.getCells();
         cells[vehicle.getPx()][vehicle.getPy()].setOccupied(false);
         cells[vehicle.getCx()][vehicle.getCy()].setOccupied(true);
+        Message message = new Message();
+        message.setContent(vehicle);
+        try {
+            webSocket.send(vehicle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

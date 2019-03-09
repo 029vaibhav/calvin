@@ -16,6 +16,8 @@ public class Cell {
     boolean decision;
     boolean enable;
     boolean occupied;
+    String lat;
+    String lon;
 
     public Cell() {
     }

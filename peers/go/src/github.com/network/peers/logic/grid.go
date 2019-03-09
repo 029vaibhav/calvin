@@ -1,12 +1,12 @@
 package logic
 
 import (
-	"github.com/network/peers/structs"
-	"net/http"
-	"io/ioutil"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"github.com/network/peers/structs"
+	"io/ioutil"
 	"math"
+	"net/http"
 )
 
 func Radians(degrees float64) float64 {
@@ -33,7 +33,7 @@ func FetchRoutePoints(source structs.Location, destination structs.Location) ([]
 
 	res, err := http.DefaultClient.Do(req)
 
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
@@ -62,25 +62,25 @@ func CalculateBearing(source structs.Location, destination structs.Location) flo
 	endLat := Radians(destination.Lat)
 	endLon := Radians(destination.Lon)
 	dLon := endLon - startLon
-	dPhi := math.Log(math.Tan(endLat/2.0 + math.Pi/4.0) / math.Tan(startLat/2.0 + math.Pi/4.0))
+	dPhi := math.Log(math.Tan(endLat/2.0+math.Pi/4.0) / math.Tan(startLat/2.0+math.Pi/4.0))
 	if math.Abs(dLon) > math.Pi {
 		if dLon > 0.0 {
-			dLon = -(2.0 * math.Pi - dLon)
+			dLon = -(2.0*math.Pi - dLon)
 		} else {
-			dLon = (2.0 * math.Pi + dLon)
+			dLon = (2.0*math.Pi + dLon)
 		}
 	}
 	bearing := math.Mod((Degrees(math.Atan2(dLon, dPhi)) + 360.0), 360.0)
 	return bearing
 }
-	
+
 func GetPathLength(source structs.Location, destination structs.Location) float64 {
 	R := 6371000.0 // Radius of earth in meters in float
 	startLat := Radians(source.Lat)
 	endLat := Radians(destination.Lat)
-	deltaLat := Radians(destination.Lat-source.Lat)
-	deltaLon := Radians(destination.Lon-source.Lon)
-    a := math.Sin(deltaLat/2) * math.Sin(deltaLat/2) + math.Cos(startLat) * math.Cos(endLat) * math.Sin(deltaLon/2) * math.Sin(deltaLon/2)
+	deltaLat := Radians(destination.Lat - source.Lat)
+	deltaLon := Radians(destination.Lon - source.Lon)
+	a := math.Sin(deltaLat/2)*math.Sin(deltaLat/2) + math.Cos(startLat)*math.Cos(endLat)*math.Sin(deltaLon/2)*math.Sin(deltaLon/2)
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 	d := R * c
 	return d
@@ -89,19 +89,19 @@ func GetPathLength(source structs.Location, destination structs.Location) float6
 func GetDestinationLatLong(destination structs.Location, azimuth float64, distance float64) []float64 {
 	R := 6378.1 // Radius of the Earth in km
 	brng := Radians(azimuth)
-	d := distance/1000
+	d := distance / 1000
 	lat1 := Radians(destination.Lat)
 	lon1 := Radians(destination.Lon)
-	lat2 := math.Asin(math.Sin(lat1) * math.Cos(d/R) + math.Cos(lat1)* math.Sin(d/R)* math.Cos(brng))
-    lon2 := lon1 + math.Atan2(math.Sin(brng) * math.Sin(d/R)* math.Cos(lat1), math.Cos(d/R)- math.Sin(lat1)* math.Sin(lat2))
+	lat2 := math.Asin(math.Sin(lat1)*math.Cos(d/R) + math.Cos(lat1)*math.Sin(d/R)*math.Cos(brng))
+	lon2 := lon1 + math.Atan2(math.Sin(brng)*math.Sin(d/R)*math.Cos(lat1), math.Cos(d/R)-math.Sin(lat1)*math.Sin(lat2))
 	lat2 = Degrees(lat2)
-    lon2 = Degrees(lon2)
-    return []float64{lat2, lon2}
+	lon2 = Degrees(lon2)
+	return []float64{lat2, lon2}
 }
 
-func GenerateCoords(interval float64, azimuth float64, source structs.Location, destination structs.Location) ([][]float64) {
+func GenerateCoords(interval float64, azimuth float64, source structs.Location, destination structs.Location) [][]float64 {
 	d := GetPathLength(source, destination)
-	_, dist := math.Modf(d/interval)
+	_, dist := math.Modf(d / interval)
 	counter := float64(interval)
 	coords := [][]float64{}
 	coords = append(coords, []float64{source.Lat, source.Lon})
@@ -113,7 +113,7 @@ func GenerateCoords(interval float64, azimuth float64, source structs.Location, 
 	return coords
 }
 
-func ComputeCoords(source structs.Location, destination structs.Location) ([][]float64) {
+func ComputeCoords(source structs.Location, destination structs.Location) [][]float64 {
 	ranges, _ := FetchRoutePoints(source, destination)
 	coords := [][]float64{}
 	azimuth := CalculateBearing(source, destination)
