@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"github.com/network/peers/structs"
 	"github.com/network/peers/logic"
-	"fmt"
+	// "fmt"
 )
 
 
@@ -21,16 +21,40 @@ func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
 func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
 	var view structs.View 
 	json.NewDecoder(r.Body).Decode(&view) 
-	routes := [][][]float64{}
-	for _, route := range view.Routes {
-		coords := logic.ComputeCoords(route.Source, route.Destination)
-		routes = append(routes, coords)
+	horizontalRoad := view.Horizontal
+	verticalRoad := view.Vertical
+	hRoute1 := logic.ComputeCoords(horizontalRoad[0].Source, horizontalRoad[0].Destination)
+	hRoute2 := logic.ComputeCoords(horizontalRoad[1].Source, horizontalRoad[1].Destination)
+
+	vRoute1 := logic.ComputeCoords(verticalRoad[0].Source, verticalRoad[0].Destination)
+	vRoute2 := logic.ComputeCoords(verticalRoad[1].Source, verticalRoad[1].Destination)
+	
+	cells := [][]structs.Cell{}
+	a, b := logic.GetIntersectionPoint(hRoute1, vRoute1, 10.0)
+	
+	cells = append(cells, MakeResponse(hRoute1, a, 1))
+	cells = append(cells, MakeResponse(hRoute2, a, -1))
+
+	cells = append(cells, MakeResponse(vRoute1, b, 1))
+	cells = append(cells, MakeResponse(vRoute2, b, -1))
+
+	respondwithJSON(w, http.StatusOK, cells)
+}
+
+func MakeResponse(route [][]float64, intersection int, direction int) []structs.Cell {
+	cells := []structs.Cell{}
+	for i, location := range route {
+		cell := structs.Cell{
+			Lat: location[0],
+			Lon: location[1],
+			Intersection: intersection == i,
+			Direction: direction,
+		}
+
+		cells = append(cells, cell)
 	}
-	fmt.Println(routes[0], routes[1])
-	a, b := logic.GetIntersectionPoint(routes[0], routes[1], 10.0)
-	fmt.Println(a)
-	fmt.Println(b)
-	respondwithJSON(w, http.StatusOK, map[string]([][][]float64){"data": routes})
+
+	return cells
 }
 
 func main() {
