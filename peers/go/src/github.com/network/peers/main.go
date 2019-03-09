@@ -29,16 +29,24 @@ func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
 	vRoute1 := logic.ComputeCoords(verticalRoad[0].Source, verticalRoad[0].Destination)
 	vRoute2 := logic.ComputeCoords(verticalRoad[1].Source, verticalRoad[1].Destination)
 	
-	cells := [][]structs.Cell{}
 	a, b := logic.GetIntersectionPoint(hRoute1, vRoute1, 10.0)
+
+	hcells := [][]structs.Cell{}
+	vcells := [][]structs.Cell{}	
 	
-	cells = append(cells, MakeResponse(hRoute1, a, 1))
-	cells = append(cells, MakeResponse(hRoute2, a, -1))
+	hcells = append(hcells, MakeResponse(hRoute1, a, 1))
+	hcells = append(hcells, MakeResponse(hRoute2, a, -1))
 
-	cells = append(cells, MakeResponse(vRoute1, b, 1))
-	cells = append(cells, MakeResponse(vRoute2, b, -1))
+	vcells = append(vcells, MakeResponse(vRoute1, b, 1))
+	vcells = append(vcells, MakeResponse(vRoute2, b, -1))
 
-	respondwithJSON(w, http.StatusOK, cells)
+	grid := structs.Grid {
+		HorizontalCells: hcells,
+		VerticalCells: vcells,
+		HorizontalY: b,
+		VerticalX: a,
+	}
+	respondwithJSON(w, http.StatusOK, grid)
 }
 
 func MakeResponse(route [][]float64, intersection int, direction int) []structs.Cell {
