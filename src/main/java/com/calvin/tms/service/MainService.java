@@ -11,26 +11,24 @@ public class MainService {
         RoadService instance = RoadService.getInstance();
         instance.generateRoad(10, 10);
 
-        VehicleMomentService vehicleMomentService = VehicleMomentService.getInstance();
-
         Vehicle vehicle = new Vehicle();
         vehicle.setCx(0);
         vehicle.setCy(5);
         vehicle.setDx(5);
         vehicle.setDy(9);
 
-        Operation operation = initiaMoment(vehicle);
+        Operation operation = initialMoment(vehicle);
         drive(vehicle, operation);
-        operation = initiaMoment(vehicle);
+        operation = initialMoment(vehicle);
         drive(vehicle, operation);
         System.out.println(vehicle);
         vehicle.setCx(0);
         vehicle.setCy(5);
         vehicle.setDx(6);
         vehicle.setDy(0);
-        operation = initiaMoment(vehicle);
+        operation = initialMoment(vehicle);
         drive(vehicle, operation);
-        operation = initiaMoment(vehicle);
+        operation = initialMoment(vehicle);
         drive(vehicle, operation);
 
         System.out.println(vehicle);
@@ -38,7 +36,7 @@ public class MainService {
 
     }
 
-    private static Operation initiaMoment(Vehicle vehicle) {
+    private static Operation initialMoment(Vehicle vehicle) {
 
         int directionOfY = 0;
         int dy;
