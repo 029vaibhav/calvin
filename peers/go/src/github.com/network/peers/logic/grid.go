@@ -23,7 +23,6 @@ func FetchRoutePoints(source structs.Location, destination structs.Location) ([]
 	query := req.URL.Query()
 
 	coordinateStr := fmt.Sprintf("%f,%f|%f,%f", source.Lat, source.Lon, destination.Lat, destination.Lon)
-
 	query.Add("api_key", "5b3ce3597851110001cf6248c274b8cf4812435bb9ce8ffc04e26110")
 	query.Add("coordinates", coordinateStr)
 	query.Add("profile", "driving-car")
@@ -113,8 +112,42 @@ func GenerateCoords(interval float64, azimuth float64, source structs.Location, 
 	return coords
 }
 
+func ComputeDistance(pointA []float64, pointB []float64) float64 {
+	R := 6371000.0 // Radius of the Earth in km
+	startLat := Radians(pointA[0])
+	startLon := Radians(pointA[1])
+	endLat := Radians(pointB[0])
+	endLon := Radians(pointB[1])
+
+	dLon := endLon - startLon
+	dLat := endLat - startLat
+	
+	a := math.Pow(math.Sin(dLat / 2), 2) + math.Cos(startLat) * math.Pow(math.Sin(dLon / 2), 2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+	
+	return R * c
+
+}
+
+func GetIntersectionPoint(baseRoute [][]float64, checkRoute [][]float64, interval float64) (int, int) {
+	for i := 0; i < len(baseRoute); i++ {
+		for j := 0; j < len(checkRoute); j++ {
+			fmt.Println(checkRoute[j])
+			distance := ComputeDistance(baseRoute[i], checkRoute[j])
+			fmt.Println("Distance ", distance, interval)
+
+			if distance <= interval {
+				return i, j
+			}
+		}
+	}
+
+	return -1, -1
+}
+
 func ComputeCoords(source structs.Location, destination structs.Location) ([][]float64) {
 	ranges, _ := FetchRoutePoints(source, destination)
+	fmt.Println(ranges)
 	coords := [][]float64{}
 	azimuth := CalculateBearing(source, destination)
 	interval := 10.0
