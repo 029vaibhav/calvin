@@ -23,10 +23,22 @@ public class RoadService {
         List<Route> routes = latLongRequest.getRoutes();
         DataResponse dataResponse = restTemplate.postForObject("http://localhost:8087/view/generate",
             latLongRequest, DataResponse.class);
+        List<List<List<String>>> data = dataResponse.getData();
+
+        int maxX = 0;
+        for (List<List<String>> datum : data) {
+            int size = datum.size();
+            if (size > maxX) {
+                maxX = size;
+            }
+        }
+        generateRoad(maxX, maxX,data);
+
+
         return raod;
     }
 
-    public void generateRoad(int maxX, int maxy) {
+    public void generateRoad(int maxX, int maxy, List<List<List<String>>> data) {
 
         Cell[][] cells = new Cell[maxX][maxy];
         for (int i = 0; i < maxX; i++) {
@@ -35,6 +47,12 @@ public class RoadService {
             }
         }
         raod.setCells(cells);
+
+        for (int i = 0; i < data.size(); i++) {
+
+
+        }
+
 
         enableRaod(cells, Operation.X_PLUS, 0, 10, 5, 6);
         enableRaod(cells, Operation.X_MINUS, 0, 10, 6, 7);
