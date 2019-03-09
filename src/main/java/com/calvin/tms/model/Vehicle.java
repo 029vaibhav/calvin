@@ -1,31 +1,19 @@
 package com.calvin.tms.model;
 
+import com.calvin.tms.model.enums.Operation;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.UUID;
 
 @Data
 public class Vehicle {
 
-    String id;
-    long speed;
-    double lat;
-    double longitude;
-    Date timeStamp;
-    int currentDirection;
-    int nextDirection;
+    String id = UUID.randomUUID().toString();
+    int px;
+    int py;
+    int cx;
+    int cy;
+    int dx;
+    int dy;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vehicle vehicle = (Vehicle) o;
-        return Objects.equals(id, vehicle.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
