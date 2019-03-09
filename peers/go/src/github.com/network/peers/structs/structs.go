@@ -26,3 +26,10 @@ type Cell struct {
 	Intersection bool `json:"intersection"`
 	Direction int `json:"direcion"`
 }
+
+type Grid struct {
+	HorizontalCells [][]Cell `json:"horizontalCells"`
+	VerticalCells [][]Cell `json:"verticalCells"`	
+	HorizontalY int `json:"horizontalY"`
+	VerticalX int `json:"verticalX"`
+}
