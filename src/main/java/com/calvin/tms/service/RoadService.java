@@ -6,6 +6,8 @@ import com.calvin.tms.model.Vehicle;
 import com.calvin.tms.model.enums.Direction;
 import com.calvin.tms.model.enums.Operation;
 
+import java.awt.*;
+
 public class RoadService {
 
 
@@ -21,8 +23,6 @@ public class RoadService {
     }
 
     public void generateRoad(int maxX, int maxy) {
-        int i1 = maxX / 2;
-        int i2 = maxy / 2;
 
         Cell[][] cells = new Cell[maxX][maxy];
         for (int i = 0; i < maxX; i++) {
@@ -37,14 +37,25 @@ public class RoadService {
         enableRaod(cells, Operation.Y_PLUS, 5, 6, 0, 10);
         enableRaod(cells, Operation.Y_MINUS, 6, 7, 0, 10);
 
-        for (int i = 0; i < maxX; i++) {
+        printRoad(maxX, maxy);
 
+    }
+
+    public void printRoad(int maxX, int maxy) {
+        System.out.println("");
+        Cell[][] cells = raod.getCells();
+        for (int i = 0; i < maxX; i++) {
             for (int j = 0; j < maxy; j++) {
                 Cell cell = cells[j][i];
                 if (cell.isEnable()) {
-                    System.out.print("[");
-                    printOp(cell);
-                    System.out.print("]");
+
+                    if (cell.isOccupied()) {
+                        System.out.print("\033[31;1m[CAR]\033[0m");
+                    } else {
+                        System.out.print("[");
+                        printOp(cell);
+                        System.out.print("]");
+                    }
                 } else {
                     System.out.print("[");
                     printOp(cell);
@@ -55,7 +66,6 @@ public class RoadService {
             }
             System.out.println("");
         }
-
     }
 
     private void printOp(Cell cell) {

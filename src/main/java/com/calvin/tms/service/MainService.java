@@ -4,6 +4,8 @@ import com.calvin.tms.model.Cell;
 import com.calvin.tms.model.Vehicle;
 import com.calvin.tms.model.enums.Operation;
 
+import java.io.IOException;
+
 public class MainService {
 
     public static void main(String[] args) {
@@ -81,13 +83,24 @@ public class MainService {
 
         if (initialOp == Operation.Y_MINUS || initialOp == Operation.Y_PLUS) {
             while (vehicle.getCy() != vehicle.getDy()) {
-                VehicleMomentService.getInstance().moveVehicle(vehicle, initialOp);
+                driveTillDestination(vehicle, initialOp);
             }
         } else {
             while (vehicle.getCx() != vehicle.getDx()) {
-                VehicleMomentService.getInstance().moveVehicle(vehicle, initialOp);
+                driveTillDestination(vehicle, initialOp);
             }
         }
     }
+
+    private static void driveTillDestination(Vehicle vehicle, Operation initialOp) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        VehicleMomentService.getInstance().moveVehicle(vehicle, initialOp);
+        RoadService.getInstance().printRoad(10, 10);
+    }
+
 
 }
