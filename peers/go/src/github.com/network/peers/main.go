@@ -20,8 +20,12 @@ func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
 func CreateViewHandler(w http.ResponseWriter, r *http.Request) {
 	var view structs.View 
 	json.NewDecoder(r.Body).Decode(&view) 
-	coords := logic.ComputeCoords(view.Routes[0].Source, view.Routes[0].Destination)
-	respondwithJSON(w, http.StatusOK, map[string]([][]float64){"data": coords})
+	routes := [][][]float64{}
+	for _, route := range view.Routes {
+		coords := logic.ComputeCoords(route.Source, view.Routes[0].Destination)
+		routes = append(routes, coords)
+	}
+	respondwithJSON(w, http.StatusOK, map[string]([][][]float64){"data": routes})
 }
 
 func main() {
