@@ -12,18 +12,19 @@ public class Cell {
     int x;
     int y;
     List<Operation> operation = new ArrayList<>();
-    boolean decision;
+    boolean externalDecision;
     boolean enable;
     boolean occupied;
     String lat;
     String lon;
+    boolean last;
 
     public Cell() {
     }
 
-    public Cell(int x, int y, boolean decision) {
+    public Cell(int x, int y, boolean externalDecision) {
         this.x = x;
         this.y = y;
-        this.decision = decision;
+        this.externalDecision = externalDecision;
     }
 }

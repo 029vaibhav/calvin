@@ -2,10 +2,11 @@ package com.calvin.tms.model;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class DataResponse {
 
-    List<List<List<String>>> data;
+    private int verticalX;
+    private VerticalCells[][] verticalCells;
+    private VerticalCells[][] horizontalCells;
+    private int horizontalY;
 }

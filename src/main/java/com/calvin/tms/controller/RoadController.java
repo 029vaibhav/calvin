@@ -1,7 +1,7 @@
 package com.calvin.tms.controller;
 
 import com.calvin.tms.model.Raod;
-import com.calvin.tms.service.LatLongRequest;
+import com.calvin.tms.model.LatLongRequest;
 import com.calvin.tms.service.RoadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
